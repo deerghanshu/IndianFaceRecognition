@@ -34,7 +34,7 @@ data_transforms = {
     ]),
 }
 
-data_dir = 'data'
+data_dir = 'output'
 image_datasets = {x: datasets.ImageFolder(os.path.join(data_dir, x),
                                           data_transforms[x])
                   for x in ['train', 'val']}
@@ -162,7 +162,7 @@ def visualize_model(model, num_images=6):
 
 model_ft = models.resnet18(pretrained=True)
 num_ftrs = model_ft.fc.in_features
-model_ft.fc = nn.Linear(num_ftrs, 6)
+model_ft.fc = nn.Linear(num_ftrs, 100)
 
 model_ft = model_ft.to(device)
 
@@ -179,5 +179,5 @@ model_ft = train_model(model_ft, criterion, optimizer_ft, exp_lr_scheduler,
 
 visualize_model(model_ft)
 
-plt.ioff()
-plt.show()
+#plt.ioff()
+#plt.show()
