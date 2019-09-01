@@ -112,7 +112,9 @@ def train_model(model, criterion, optimizer, scheduler, num_epochs=25):
     model.load_state_dict(best_model_wts)
     return model
 
-model_ft = models.resnet18(pretrained=True)
+model_ft = models.resnet152(pretrained=False, progress=True)
+#model_ft = models..resnext101_32x8d(pretrained=False, progress=True)
+model_ft.load_state_dict(torch.load(PATH))
 num_ftrs = model_ft.fc.in_features
 model_ft.fc = nn.Linear(num_ftrs, 100)
 
