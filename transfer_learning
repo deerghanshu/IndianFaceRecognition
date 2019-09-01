@@ -21,39 +21,6 @@ import split_folders
 
 split_folders.ratio('/content/drive/My Drive/Pytorch', output='/content/data', seed=1337, ratio=(0.9,0.1))
 
-"""Transfer Learning Tutorial
-==========================
-**Author**: `Sasank Chilamkurthy <https://chsasank.github.io>`_
-
-In this tutorial, you will learn how to train your network using
-transfer learning. You can read more about the transfer learning at `cs231n
-notes <http://cs231n.github.io/transfer-learning/>`__
-
-Quoting these notes,
-
-    In practice, very few people train an entire Convolutional Network
-    from scratch (with random initialization), because it is relatively
-    rare to have a dataset of sufficient size. Instead, it is common to
-    pretrain a ConvNet on a very large dataset (e.g. ImageNet, which
-    contains 1.2 million images with 1000 categories), and then use the
-    ConvNet either as an initialization or a fixed feature extractor for
-    the task of interest.
-
-These two major transfer learning scenarios look as follows:
-
--  **Finetuning the convnet**: Instead of random initializaion, we
-   initialize the network with a pretrained network, like the one that is
-   trained on imagenet 1000 dataset. Rest of the training looks as
-   usual.
--  **ConvNet as fixed feature extractor**: Here, we will freeze the weights
-   for all of the network except that of the final fully connected
-   layer. This last fully connected layer is replaced with a new one
-   with random weights and only this layer is trained.
-"""
-
-# License: BSD
-# Author: Sasank Chilamkurthy
-
 from __future__ import print_function, division
 
 import torch
@@ -98,12 +65,6 @@ dataset_sizes = {x: len(image_datasets[x]) for x in ['train', 'val']}
 class_names = image_datasets['train'].classes
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-
-"""Visualize a few images
-^^^^^^^^^^^^^^^^^^^^^^
-Let's visualize a few training images so as to understand the data
-augmentations.
-"""
 
 def imshow(inp, title=None):
     """Imshow for Tensor."""
@@ -237,49 +198,6 @@ model_ft = train_model(model_ft, criterion, optimizer_ft, exp_lr_scheduler,
                        num_epochs=25)
 
 visualize_model(model_ft)
-
-"""ConvNet as fixed feature extractor
-----------------------------------
-
-Here, we need to freeze all the network except the final layer. We need
-to set ``requires_grad == False`` to freeze the parameters so that the
-gradients are not computed in ``backward()``.
-
-You can read more about this in the documentation
-`here <http://pytorch.org/docs/notes/autograd.html#excluding-subgraphs-from-backward>`__.
-"""
-
-model_conv = torchvision.models.resnet18(pretrained=True)
-for param in model_conv.parameters():
-    param.requires_grad = False
-
-# Parameters of newly constructed modules have requires_grad=True by default
-num_ftrs = model_conv.fc.in_features
-model_conv.fc = nn.Linear(num_ftrs, 2)
-
-model_conv = model_conv.to(device)
-
-criterion = nn.CrossEntropyLoss()
-
-# Observe that only parameters of final layer are being optimized as
-# opoosed to before.
-optimizer_conv = optim.SGD(model_conv.fc.parameters(), lr=0.001, momentum=0.9)
-
-# Decay LR by a factor of 0.1 every 7 epochs
-exp_lr_scheduler = lr_scheduler.StepLR(optimizer_conv, step_size=7, gamma=0.1)
-
-"""Train and evaluate
-^^^^^^^^^^^^^^^^^^
-
-On CPU this will take about half the time compared to previous scenario.
-This is expected as gradients don't need to be computed for most of the
-network. However, forward does need to be computed.
-"""
-
-model_conv = train_model(model_conv, criterion, optimizer_conv,
-                         exp_lr_scheduler, num_epochs=25)
-
-visualize_model(model_conv)
 
 plt.ioff()
 plt.show()
