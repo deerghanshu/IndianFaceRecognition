@@ -1,1 +1,1 @@
-# AIHack
+# AIHackathon
