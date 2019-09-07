@@ -1,13 +1,13 @@
+from __future__ import print_function
+import os
+import sys
 from collections import OrderedDict
 import numpy as np
 import cv2
 import imutils
 import dlib
 import matplotlib.pyplot as plt
-from tqdm import tqdm
-from __future__ import print_function
-import os
-import sys
+from tqdm import tqdm, trange
 
 FACIAL_LANDMARKS_68_IDXS = OrderedDict([
 	("mouth", (48, 68)),
